@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Personal Expense Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:"Rs";unicode-range:U+20B9;src:local("Segoe UI"),local("Arial"),local("Roboto"),local("Helvetica Neue"),local("Liberation Sans"),local("DejaVu Sans")}
+:root{--bg:#f3f0ff;--ink:#1e1b3a;--mu:#7a7796;--ln:#e8e4f7;--vi:#6a47f5;--pk:#ff5c8a;--te:#14b8a6;--ro:#f43f5e;--am:#f59e0b;--gr:#22c55e;
+--sh:0 10px 30px -12px rgba(76,52,170,.28);--hd:"Rs","Sora","DM Sans",system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 "Rs","DM Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+/* hero */
+.hero{position:relative;overflow:hidden;color:#fff;padding:38px 16px 96px;background:linear-gradient(120deg,#4429d6 0%,#7a2fe0 50%,#e0407f 100%);text-shadow:0 1px 10px rgba(30,10,100,.35)}
+.hero::before,.hero::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.05)}
+.hero::before{width:340px;height:340px;right:-80px;top:-140px}.hero::after{width:220px;height:220px;left:38%;bottom:-130px}
+.hero-in{position:relative;z-index:1;max-width:1068px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:28px;flex-wrap:wrap}
+h1{font:800 32px/1.15 var(--hd);margin:0 0 16px;letter-spacing:-.5px}
+.mon{height:44px;border:1px solid rgba(255,255,255,.6);background:rgba(20,10,80,.25);color:#fff;border-radius:12px;padding:0 14px;font:inherit;font-weight:500;color-scheme:dark}
+.ringwrap{display:flex;align-items:center;gap:20px}
+.ring{--p:0;position:relative;width:150px;height:150px;border-radius:50%;background:conic-gradient(#fff calc(var(--p)*1%),rgba(20,10,80,.3) 0);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 15px),#000 calc(100% - 14px));mask:radial-gradient(farthest-side,transparent calc(100% - 15px),#000 calc(100% - 14px))}
+.ring.over{background:conic-gradient(#ffd1dc calc(var(--p)*1%),rgba(20,10,80,.3) 0)}
+.ringtxt{position:absolute;top:0;left:0;width:150px;height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.ringtxt b{font:700 22px var(--hd)}.ringtxt small{font-size:12px;font-weight:500}
+.pct{font-size:14px;font-weight:500;max-width:150px}
+/* layout */
+.wrap{max-width:1100px;margin:-64px auto 0;padding:0 16px 40px;position:relative;z-index:2}
+.stats{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-bottom:16px}
+.stat{background:#fff;border-radius:20px;padding:18px 20px;box-shadow:var(--sh)}
+.stat small{display:flex;align-items:center;gap:8px;color:var(--mu);font-weight:500}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.stat b{display:block;font:700 28px/1.3 var(--hd);margin-top:4px;letter-spacing:-.5px}
+.panel{background:#fff;border-radius:20px;padding:20px;margin-bottom:16px;box-shadow:var(--sh)}
+h2{font:700 16px var(--hd);margin:0 0 14px}
+.ctl{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:flex-end}
+.grp{display:flex;min-width:0}.grp button{flex:0 0 auto}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.row>*{flex:1 1 120px;min-width:0}
+input,select{font:inherit;height:44px;padding:0 14px;border:1.5px solid var(--ln);border-radius:12px;background:#faf9ff;color:var(--ink);outline:none;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus{border-color:var(--vi);box-shadow:0 0 0 4px rgba(106,71,245,.14)}
+.grp input{min-width:0;width:190px;border-radius:12px 0 0 12px;border-right:0}
+button{white-space:nowrap;font:inherit;font-weight:700;color:#fff;border:0;border-radius:12px;height:44px;padding:0 22px;cursor:pointer;transition:transform .12s,filter .12s}
+button:hover{filter:brightness(1.07)}button:active{transform:scale(.97)}
+button:focus-visible{outline:3px solid rgba(106,71,245,.4);outline-offset:2px}
+.b-bud{background:linear-gradient(135deg,#f59e0b,#f97316);border-radius:0 12px 12px 0}
+.b-tool{background:#ede9ff;color:var(--vi)}
+.b-add{background:linear-gradient(135deg,#16a34a,#14b8a6);box-shadow:0 8px 18px -8px rgba(20,184,166,.8)}
+.b-del{background:#ffe4ea;color:var(--ro);height:32px;width:32px;padding:0;border-radius:10px}
+.form{border-top:5px solid transparent;border-image:linear-gradient(90deg,var(--vi),var(--pk)) 1;border-radius:0 0 20px 20px}
+.two{display:grid;gap:16px;grid-template-columns:1.9fr 1fr}.two>*{min-width:0;margin-bottom:0}
+@media(max-width:800px){.two{grid-template-columns:1fr}.ctl{justify-content:stretch}.grp{flex:1 1 100%}.grp input{flex:1;width:auto}h1{font-size:26px}}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px}
+th{color:var(--mu);font-weight:500;text-align:left;padding:8px 10px;border-bottom:2px solid var(--ln);white-space:nowrap}
+td{padding:12px 10px;border-bottom:1px solid var(--ln);white-space:nowrap}
+tbody tr:hover td{background:#faf8ff}tbody tr:last-child td{border-bottom:0}
+.tag{display:inline-block;padding:3px 12px;border-radius:99px;font-size:12px;font-weight:700}
+.necessary{background:#d8f6f1;color:#0b6e63}.extra{background:#ffe1e8;color:#b4123f}
+.amt{font:700 14px var(--hd);text-align:right}
+.bar{height:14px;border-radius:7px;background:var(--ln);overflow:hidden;display:flex}.bar i{display:block;height:100%}
+.crow{margin-top:14px;font-size:13px}.crow>div:first-child{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.crow .t{height:8px;border-radius:5px;background:var(--ln);overflow:hidden}.crow .t i{display:block;height:100%;border-radius:5px}
+.empty{text-align:center;color:var(--mu);padding:26px 0}
+#status{margin:12px auto;max-width:1100px;padding:10px 14px;border-radius:12px;background:var(--ro);color:#fff;font-size:14px}
+</style></head><body>
+<header class="hero"><div class="hero-in">
+<div><h1>Personal Expense Tracker</h1><input type="month" id="mon" class="mon" aria-label="Month" title="Month"></div>
+<div class="ringwrap"><div style="position:relative;width:150px;height:150px"><div class="ring" id="leftc"></div>
+<div class="ringtxt"><small>Left to spend</small><b id="left">–</b></div></div><div class="pct" id="pct"></div></div>
+</div></header>
+<div id="status" hidden></div>
+<div class="wrap">
+<div class="stats">
+<div class="stat"><small><i class="dot" style="background:var(--vi)"></i>Total spent</small><b id="tot" style="color:var(--vi)">₹0</b></div>
+<div class="stat"><small><i class="dot" style="background:var(--te)"></i>Necessary</small><b id="nec" style="color:#0f9488">₹0</b></div>
+<div class="stat"><small><i class="dot" style="background:var(--ro)"></i>Extra</small><b id="ext" style="color:var(--ro)">₹0</b></div></div>
+
+<div class="panel ctl">
+<div class="grp"><input type="number" id="bud" min="0" placeholder="Monthly budget (₹)" aria-label="Monthly budget"><button class="b-bud" id="sb">Set budget</button></div>
+<button class="b-tool" id="imp">Import file</button>
+<input type="file" id="fi" accept=".txt,text/plain" hidden></div>
+
+<div class="panel form"><h2>Add expense</h2><div class="row">
+<input type="number" id="amt" min="0" step="0.01" placeholder="Amount (₹)">
+<input id="note" placeholder="Description" maxlength="200">
+<select id="cat"><option>Food</option><option>Transport</option><option>Rent</option><option>Bills</option><option>Shopping</option><option>Entertainment</option><option>Health</option><option>Education</option><option>Other</option></select>
+<select id="typ"><option value="necessary">Necessary</option><option value="extra">Extra</option></select>
+<input type="date" id="dt"><button class="b-add" id="add">+ Add</button></div></div>
+
+<div class="two">
+<div class="panel"><h2>Expense log</h2><input id="q" placeholder="Search description, category or type…" style="width:100%;margin-bottom:12px"><div class="tw"><table><thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Type</th><th style="text-align:right">Amount</th><th></th></tr></thead><tbody id="tb"></tbody></table></div></div>
+<div class="panel"><h2>Necessary vs extra</h2><div class="bar"><i id="bn" style="background:var(--te)"></i><i id="be" style="background:var(--ro)"></i></div>
+<div id="split" style="font-size:13px;color:var(--mu);margin-top:6px"></div>
+<h2 style="margin-top:22px">By category</h2><div id="cats"></div></div></div>
+</div>
+<script>
+const $=id=>document.getElementById(id),PAL=["#6a47f5","#ff5c8a","#14b8a6","#f59e0b","#f43f5e","#22c55e","#0ea5e9","#a855f7","#f97316"];
+const fmt=n=>"₹"+Number(n||0).toLocaleString("en-IN",{maximumFractionDigits:2});
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let data={budget:0,expenses:[],file:""};
+const now=new Date(),iso=now.toISOString().slice(0,10);$("dt").value=iso;$("mon").value=iso.slice(0,7);
+function status(ok,msg){const s=$("status");s.hidden=ok;s.textContent=ok?"":msg}
+async function api(url,body,type){
+ const r=await fetch(url,{method:"POST",headers:{"Content-Type":type||"application/x-www-form-urlencoded"},body});
+ const t=await r.text();if(!r.ok)throw new Error(t);return t}
+async function load(){
+ if(location.protocol==="file:"){status(false,"Start the Java program (java ExpenseServer) and open http://localhost:8080 instead of this file.");return}
+ try{const r=await fetch("/api/data");data=await r.json();status(true,"");render()}
+ catch(e){status(false,"Cannot reach the Java program. Make sure ExpenseServer is running.")}}
+function render(){
+ const m=$("mon").value,q=$("q").value.toLowerCase(),all=data.expenses;
+ const mi=all.filter(x=>x.date.startsWith(m));
+ const t=mi.reduce((s,x)=>s+x.amount,0),n=mi.filter(x=>x.type==="necessary").reduce((s,x)=>s+x.amount,0),e=t-n;
+ $("tot").textContent=fmt(t);$("nec").textContent=fmt(n);$("ext").textContent=fmt(e);
+ $("left").textContent=data.budget?fmt(data.budget-t):"–";
+ const p=data.budget?Math.min(100,t/data.budget*100):0;
+ $("leftc").style.setProperty("--p",p);$("leftc").classList.toggle("over",data.budget>0&&t>data.budget);
+ $("pct").textContent=data.budget?(t>data.budget?"Over budget by "+fmt(t-data.budget):Math.round(t/data.budget*100)+"% of "+fmt(data.budget)+" used"):"Set a monthly budget to track it";
+ if(document.activeElement!==$("bud"))$("bud").value=data.budget||"";
+ $("bn").style.width=t?n/t*100+"%":"0";$("be").style.width=t?e/t*100+"%":"0";
+ $("split").textContent=t?Math.round(n/t*100)+"% necessary · "+Math.round(e/t*100)+"% extra":"No spending this month";
+ const by={};mi.forEach(x=>by[x.category]=(by[x.category]||0)+x.amount);
+ const ks=Object.keys(by).sort(),mx=Math.max(0,...Object.values(by));
+ $("cats").innerHTML=ks.map((k,i)=>`<div class="crow"><div><span><i class="dot" style="background:${PAL[i%PAL.length]};margin-right:8px"></i>${esc(k)}</span><b>${fmt(by[k])}</b></div><div class="t"><i style="width:${by[k]/mx*100}%;background:${PAL[i%PAL.length]}"></i></div></div>`).join("")||'<div class="empty">Nothing spent yet</div>';
+ const rows=all.filter(x=>x.date.startsWith(m)&&(x.note+x.category+x.type).toLowerCase().includes(q)).sort((a,b)=>b.date.localeCompare(a.date));
+ $("tb").innerHTML=rows.map(x=>`<tr><td>${x.date}</td><td>${esc(x.note||"–")}</td><td>${esc(x.category)}</td><td><span class="tag ${x.type}">${x.type}</span></td><td class="amt">${fmt(x.amount)}</td><td><button class="b-del" data-id="${x.id}" aria-label="Delete expense">✕</button></td></tr>`).join("")||'<tr><td colspan="6" class="empty">No expenses found. Add one above.</td></tr>';
+}
+async function run(fn){try{await fn();await load()}catch(e){alert(e.message)}}
+$("add").onclick=()=>run(async()=>{
+ await api("/api/add",new URLSearchParams({amount:$("amt").value,note:$("note").value,category:$("cat").value,type:$("typ").value,date:$("dt").value}).toString());
+ $("amt").value="";$("note").value="";});
+$("amt").onkeydown=e=>{if(e.key==="Enter")$("add").click()};
+$("tb").onclick=e=>{const b=e.target.closest("[data-id]");if(b&&confirm("Delete this expense?"))run(()=>api("/api/delete","id="+b.dataset.id))};
+$("sb").onclick=()=>run(()=>api("/api/budget","value="+encodeURIComponent($("bud").value)));
+$("imp").onclick=()=>$("fi").click();
+$("fi").onchange=()=>{const f=$("fi").files[0];if(!f)return;
+ if(confirm("Replace current data with the contents of "+f.name+"?"))run(async()=>{alert(await api("/api/import",await f.text(),"text/plain"))});$("fi").value=""};
+$("q").oninput=render;$("mon").onchange=render;
+load();
+</script></body></html>
